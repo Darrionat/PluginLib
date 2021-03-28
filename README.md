@@ -7,7 +7,7 @@ To add this this project to your Maven project make sure you have the following 
 ```xml
 <repository>
     <id>jitpack.io</id>
-	<url>https://jitpack.io</url>
+    <url>https://jitpack.io</url>
 </repository>
 ```
 
