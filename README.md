@@ -25,30 +25,30 @@ To add this this project to your Maven project make sure you have the following 
 ### Shading
 ```xml
 <build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>3.1.0</version>
-			<configuration>
-				<relocations>
-					<relocation>
-						<pattern>me.darrionat.pluginlib</pattern>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+                <relocations>
+                    <relocation>
+                        <pattern>me.darrionat.pluginlib</pattern>
                         <!-- Make sure to change the package below -->
-						<shadedPattern>my.plugin.utils</shadedPattern>
-					</relocation>
-				</relocations>
-			</configuration>
-			<executions>
-				<execution>
-					<phase>package</phase>
-					<goals>
-						<goal>shade</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
-	</plugins>
+                        <shadedPattern>my.plugin.utils</shadedPattern>
+                    </relocation>
+                </relocations>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
 </build>
 ```
 
