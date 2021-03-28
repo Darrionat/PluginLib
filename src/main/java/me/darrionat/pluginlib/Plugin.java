@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.darrionat.pluginlib.guis.GuiHandler;
 import me.darrionat.pluginlib.guis.GuiManager;
+import me.darrionat.pluginlib.utils.SpigotMCUpdateHandler;
 import me.darrionat.pluginlib.utils.Utils;
 
 /**
@@ -32,6 +33,16 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
 	 */
 	public final GuiHandler getGuiHandler() {
 		return guiHandler;
+	}
+
+	/**
+	 * Creates a new {@link SpigotMCUpdateHandler}.
+	 * 
+	 * @param resourceId The project id of the resource on SpigotMC.
+	 * @return Returns a {@link SpigotMCUpdateHandler} for this plugin.
+	 */
+	public final SpigotMCUpdateHandler buildUpdateChecker(int resourceId) {
+		return new SpigotMCUpdateHandler(this, resourceId);
 	}
 
 	/**
