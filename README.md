@@ -14,8 +14,8 @@ To add this this project to your Maven project make sure you have the following 
 ```xml
 <dependency>
     <groupId>com.github.darrionat</groupId>
-	<artifactId>PluginLib</artifactId>
-	<version>version</version>
+    <artifactId>PluginLib</artifactId>
+    <version>version</version>
 </dependency>
 ```
 
