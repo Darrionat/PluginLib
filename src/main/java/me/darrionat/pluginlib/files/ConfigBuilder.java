@@ -67,7 +67,7 @@ public class ConfigBuilder extends FileBuilder {
 	 */
 	public Config build() {
 
-		if (builtIn)
+		if (!builtIn)
 			createFile();
 		else
 			plugin.saveResource(name, false);
