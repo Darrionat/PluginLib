@@ -7,7 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,6 @@ import java.util.Set;
  */
 public class GuiManager implements GuiHandler, Listener {
     private final Set<Gui> registeredGuis = new HashSet<Gui>();
-    private final Set<Gui> toRegisterGuis = new HashSet<Gui>();
 
     public GuiManager(Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -28,11 +26,7 @@ public class GuiManager implements GuiHandler, Listener {
      * {@inheritDoc}
      */
     public void registerGui(Gui gui) {
-        try {
-            registeredGuis.add(gui);
-        } catch (ConcurrentModificationException e) {
-            toRegisterGuis.add(gui);
-        }
+        registeredGuis.add(gui);
     }
 
     /**
@@ -60,16 +54,18 @@ public class GuiManager implements GuiHandler, Listener {
             return;
 
         String title = e.getView().getTitle();
+        Gui clickedGui = null;
         for (Gui gui : registeredGuis) {
             if (!gui.getName().equals(title))
-                return;
+                continue;
             if (!gui.allowsClick())
                 e.setCancelled(true);
             if (!e.getInventory().equals(e.getClickedInventory()))
-                return;
-            gui.clicked((Player) e.getWhoClicked(), e.getSlot(), e.getClick());
+                continue;
+            clickedGui = gui;
+            break;
         }
-        registeredGuis.addAll(toRegisterGuis);
-        toRegisterGuis.clear();
+        if (clickedGui != null)
+            clickedGui.clicked((Player) e.getWhoClicked(), e.getSlot(), e.getClick());
     }
 }
