@@ -17,11 +17,11 @@ public class SpigotMCUpdateHandler {
 	/**
 	 * The current version of the plugin
 	 */
-	private String currentVersion;
+	private final String currentVersion;
 	/**
 	 * The project id on SpigotMC
 	 */
-	private int resourceId;
+	private final int resourceId;
 	/**
 	 * The URL that will be used to access the SpigotMC API
 	 */

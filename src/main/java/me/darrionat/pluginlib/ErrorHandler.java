@@ -19,7 +19,7 @@ public interface ErrorHandler {
 	 * @param permission The permission the player does not have.
 	 * @see Player#hasPermission(String)
 	 */
-	public void noPermissionError(Player p, String permission);
+    void noPermissionError(Player p, String permission);
 
 	/**
 	 * Ran when a {@link CommandSender} attempts to use a command that only
@@ -27,7 +27,7 @@ public interface ErrorHandler {
 	 * 
 	 * @param sender The command sender.
 	 */
-	public void onlyPlayerCommandError(CommandSender sender);
+    void onlyPlayerCommandError(CommandSender sender);
 
 	/**
 	 * Ran when a {@link CommandSender} attempts to run a {@link SubCommand} without
@@ -37,5 +37,5 @@ public interface ErrorHandler {
 	 * @param sender     The sender of the command.
 	 * @see SubCommand#getRequiredArgs()
 	 */
-	public void notEnoughArguments(SubCommand subCommand, CommandSender sender);
+    void notEnoughArguments(SubCommand subCommand, CommandSender sender);
 }

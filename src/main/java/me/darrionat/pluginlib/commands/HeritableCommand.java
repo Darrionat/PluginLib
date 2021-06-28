@@ -11,12 +11,12 @@ public interface HeritableCommand {
 	 * 
 	 * @return Returns a list of all subcommands this command has.
 	 */
-	public List<SubCommand> getSubCommands();
+    List<SubCommand> getSubCommands();
 
 	/**
 	 * Adds a {@link SubCommand} to the {@link HeritableCommand}.
 	 * 
 	 * @param subCommand the subcommand to add.
 	 */
-	public void addSubCommand(SubCommand subCommand);
+    void addSubCommand(SubCommand subCommand);
 }

@@ -16,15 +16,15 @@ public abstract class SubCommand {
 	/**
 	 * The {@link ErrorHandler} of the plugin.
 	 */
-	private ErrorHandler errorHandler;
+	private final ErrorHandler errorHandler;
 	/**
 	 * The parent command.
 	 */
-	private BaseCommand parentCommand;
+	private final BaseCommand parentCommand;
 	/**
 	 * The permission of this SubCommand.
 	 */
-	private String permission;
+	private final String permission;
 
 	/**
 	 * Creates a new {@link SubCommand} object and adds it the the

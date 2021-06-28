@@ -17,11 +17,11 @@ public class LocalConfig implements UpdateableConfig {
 	/**
 	 * The {@link Plugin} that this config belongs to
 	 */
-	private Plugin plugin;
+	private final Plugin plugin;
 	/**
 	 * The File of the config
 	 */
-	private File file;
+	private final File file;
 
 	/**
 	 * Creates a new {@link Config}. This should be created with the

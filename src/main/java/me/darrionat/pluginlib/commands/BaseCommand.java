@@ -16,9 +16,9 @@ import me.darrionat.pluginlib.Plugin;
  * The {@link BaseCommand} class represents a registered {@link PluginCommand}.
  */
 public abstract class BaseCommand implements CommandExecutor, HeritableCommand {
-    private ErrorHandler errorHandler;
-    private String permission;
-    private List<SubCommand> subCommands = new ArrayList<SubCommand>();
+    private final ErrorHandler errorHandler;
+    private final String permission;
+    private final List<SubCommand> subCommands = new ArrayList<SubCommand>();
 
     /**
      * Creates and registers a new {@link BaseCommand} object.

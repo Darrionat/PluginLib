@@ -15,5 +15,5 @@ public interface UpdateableConfig extends Config {
 	 * 
 	 * @see FileConfiguration#set(String, Object)
 	 */
-	public void sync();
+    void sync();
 }

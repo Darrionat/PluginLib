@@ -12,11 +12,11 @@ public abstract class FileBuilder {
 	/**
 	 * The plugin the file being built belongs to.
 	 */
-	protected Plugin plugin;
+	protected final Plugin plugin;
 	/**
 	 * The name of the {@link File}.
 	 */
-	protected String name;
+	protected final String name;
 
 	/**
 	 * Creates a new {@link FileBuilder}.
