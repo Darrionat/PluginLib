@@ -34,8 +34,8 @@ public abstract class Gui {
      */
     protected final int size;
     /**
-     * Determines if a {@link Player} who clicks within the {@link Gui} is able to
-     * take items out of the displayed inventory.
+     * Determines if a {@link Player} who clicks within the {@link Gui} is able to take items out of the displayed
+     * inventory.
      */
     private boolean allowClick = false;
 
@@ -49,6 +49,8 @@ public abstract class Gui {
     public Gui(Plugin plugin, String name, int rows) {
         this.plugin = plugin;
         this.size = rows * 9;
+        if (name.length() > 32)
+            name = name.substring(0, 31);
         this.name = name;
         inv = Bukkit.createInventory(null, size, name);
         plugin.getGuiHandler().registerGui(this);
@@ -64,8 +66,8 @@ public abstract class Gui {
     }
 
     /**
-     * Determines if a {@link Player} who clicks within the {@link Gui} is able to
-     * take items out of the displayed inventory. Set to {@code false} by default.
+     * Determines if a {@link Player} who clicks within the {@link Gui} is able to take items out of the displayed
+     * inventory. Set to {@code false} by default.
      * <p>
      * Recommended: {@code false}
      *
@@ -76,11 +78,9 @@ public abstract class Gui {
     }
 
     /**
-     * Checks to see if a {@link Player} is allowed to click within the
-     * {@link Inventory}.
+     * Checks to see if a {@link Player} is allowed to click within the {@link Inventory}.
      *
-     * @return Returns {@code true} if a player is allowed take items from the
-     * {@link Gui}.
+     * @return Returns {@code true} if a player is allowed take items from the {@link Gui}.
      */
     public boolean allowsClick() {
         return allowClick;
@@ -108,8 +108,8 @@ public abstract class Gui {
      * @param name       The display name of the item.
      * @param loreString The lines of the lore of the item.
      */
-    protected void createItem(XMaterial material, int amount, int invSlot, String name, String... loreString) {
-        List<String> lore = new ArrayList<String>();
+    public void createItem(XMaterial material, int amount, int invSlot, String name, String... loreString) {
+        List<String> lore = new ArrayList<>();
         for (String s : loreString) {
             lore.add(Utils.chat(s));
         }
@@ -126,7 +126,7 @@ public abstract class Gui {
      * @param lore     The lore of the item.
      * @return Returns the item placed within the {@link Gui}.
      */
-    protected ItemStack createItem(XMaterial material, int amount, int invSlot, String name, List<String> lore) {
+    public ItemStack createItem(XMaterial material, int amount, int invSlot, String name, List<String> lore) {
         ItemStack item = material.parseItem();
         item.setAmount(amount);
         return createItem(item, invSlot, name, lore);
