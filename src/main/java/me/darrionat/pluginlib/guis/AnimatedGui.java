@@ -148,7 +148,7 @@ public abstract class AnimatedGui extends Gui {
      * Removes and stops all animations in the gui.
      */
     public void stopAnimations() {
-        animations.forEach((integer, animation) -> removeAnimation(integer));
+        animations.forEach((id, animation) -> removeAnimation(id));
     }
 
     /**

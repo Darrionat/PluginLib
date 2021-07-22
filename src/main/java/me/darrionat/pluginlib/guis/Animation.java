@@ -52,13 +52,13 @@ public class Animation {
      *
      * @see #from
      */
-    private final String fromName;
+    private String fromName;
     /**
      * The lore of {@code from}.
      *
      * @see #from
      */
-    private final List<String> fromLore;
+    private List<String> fromLore;
     /**
      * The id of the task running the animation.
      */
@@ -99,13 +99,15 @@ public class Animation {
         this.each = each;
         ItemMeta meta = from.getItemMeta();
         // Set the name and lore of from item
-        if (meta == null) {
-            fromName = " ";
-            fromLore = new ArrayList<>();
-        } else {
+        if (meta != null) {
             fromName = meta.getDisplayName();
             fromLore = meta.getLore();
         }
+        if (fromName == null)
+            fromName = " ";
+        if (fromLore == null)
+            fromLore = new ArrayList<>();
+
     }
 
     /**

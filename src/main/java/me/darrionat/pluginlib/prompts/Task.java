@@ -56,6 +56,8 @@ public abstract class Task {
      * Determines if an input is a valid input for the task currently.
      * <p>
      * If the required conditions of the task have been met.
+     * <p>
+     * If the input is valid input, the {@link Task} is updated.
      *
      * @param input The input text.
      * @return {@code true} if the task met its base conditions; otherwise {@code false}.
