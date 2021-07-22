@@ -111,7 +111,7 @@ public abstract class Gui {
     public void createItem(XMaterial material, int amount, int invSlot, String name, String... loreString) {
         List<String> lore = new ArrayList<>();
         for (String s : loreString) {
-            lore.add(Utils.chat(s));
+            lore.add(Utils.toColor(s));
         }
         createItem(material, amount, invSlot, name, lore);
     }
@@ -141,9 +141,9 @@ public abstract class Gui {
      * @param lore    The lore of the item.
      * @return Returns the item placed within the {@link Gui}.
      */
-    private ItemStack createItem(ItemStack item, int invSlot, String name, List<String> lore) {
+    protected ItemStack createItem(ItemStack item, int invSlot, String name, List<String> lore) {
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Utils.chat(name));
+        meta.setDisplayName(Utils.toColor(name));
         meta.setLore(lore);
         item.setItemMeta(meta);
         inv.setItem(invSlot, item);

@@ -13,14 +13,12 @@ public class ConfigBuilder extends FileBuilder {
      */
     private boolean update = false;
     /**
-     * Whether this is a default resource in the plugin or not. This determines how
-     * the config will be created.
+     * Whether this is a default resource in the plugin or not. This determines how the config will be created.
      */
     private boolean builtIn = false;
 
     /**
-     * Creates a {@link ConfigBuilder} object which can be used to create
-     * {@link Config} objects.
+     * Creates a {@link ConfigBuilder} object which can be used to create {@link Config} objects.
      *
      * @param plugin   The plugin the {@link Config} being built belongs to.
      * @param fileName The name of the {@link File} that the config represents.
@@ -30,8 +28,7 @@ public class ConfigBuilder extends FileBuilder {
     }
 
     /**
-     * Changes the default method of creating a new file to using a default resource
-     * within the {@link Plugin}.
+     * Changes the default method of creating a new file to using a default resource within the {@link Plugin}.
      *
      * @return Returns the {@link ConfigBuilder}.
      * @see Plugin#saveResource(String, boolean)
@@ -54,24 +51,20 @@ public class ConfigBuilder extends FileBuilder {
     /**
      * Builds the {@link Config}.
      * <p>
-     * The config will be built from a built in resource instead of creating a new
-     * {@link File} if {@link #useBuiltInFile()} was ran.
+     * The config will be built from a built in resource instead of creating a new {@link File} if {@link
+     * #useBuiltInFile()} was ran.
      * <p>
-     * The config will be updated to the newest resource located within the
-     * {@link Plugin} if {@link #updateConfig()} was ran.
+     * The config will be updated to the newest resource located within the {@link Plugin} if {@link #updateConfig()}
+     * was ran.
      *
-     * @return Returns the config which has been created within the {@link Plugin}'s
-     * directory.
+     * @return Returns the config which has been created within the {@link Plugin}'s directory.
      * @see ConfigBuilder#useBuiltInFile
      * @see ConfigBuilder#updateConfig
      */
     public Config build() {
-
-        if (!builtIn)
-            createFile();
-        else
-            plugin.saveResource(name, false);
-
+        if (!exists())
+            if (!builtIn) createFile();
+            else plugin.saveResource(name, false);
         LocalConfig config = new LocalConfig(plugin, getFile());
         if (update)
             config.sync();

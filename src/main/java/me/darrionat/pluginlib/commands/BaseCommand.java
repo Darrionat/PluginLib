@@ -1,16 +1,15 @@
 package me.darrionat.pluginlib.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.darrionat.pluginlib.ErrorHandler;
+import me.darrionat.pluginlib.Plugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import me.darrionat.pluginlib.ErrorHandler;
-import me.darrionat.pluginlib.Plugin;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The {@link BaseCommand} class represents a registered {@link PluginCommand}.
@@ -18,17 +17,19 @@ import me.darrionat.pluginlib.Plugin;
 public abstract class BaseCommand implements CommandExecutor, HeritableCommand {
     private final ErrorHandler errorHandler;
     private final String permission;
-    private final List<SubCommand> subCommands = new ArrayList<SubCommand>();
+    private final List<SubCommand> subCommands = new ArrayList<>();
 
     /**
      * Creates and registers a new {@link BaseCommand} object.
-     * 
+     *
      * @param plugin The {@link Plugin} that the command will be registered to.
      */
     public BaseCommand(Plugin plugin) {
         this.errorHandler = plugin.getErrorHandler();
         this.permission = getCommandLabel() + ".use";
-        plugin.getCommand(getCommandLabel()).setExecutor(this);
+        PluginCommand command = plugin.getCommand(getCommandLabel());
+        command.setExecutor(this);
+        command.setTabCompleter(new CommandTabCompleter(this));
     }
 
     /**
@@ -76,14 +77,14 @@ public abstract class BaseCommand implements CommandExecutor, HeritableCommand {
 
     /**
      * Gets the label of the {@link BaseCommand}.
-     * 
+     *
      * @return Returns the label of the command as a {@link String}.
      */
     public abstract String getCommandLabel();
 
     /**
      * Ran when the {@link BaseCommand} has no {@link SubCommand}s that were run.
-     * 
+     *
      * @param sender  the sender of the command
      * @param command the command that was ran
      * @param label   the label of the command

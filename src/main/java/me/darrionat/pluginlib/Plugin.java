@@ -11,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class Plugin extends JavaPlugin implements IPlugin {
     private static Plugin instance;
-
     private GuiHandler guiHandler;
 
     /**
@@ -24,8 +23,7 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
     }
 
     /**
-     * Ran when the plugin is enabled. This method cannot be overridden by a
-     * subclass.
+     * Ran when the plugin is enabled. This method cannot be overridden by a subclass.
      *
      * @see Plugin#initPlugin()
      */
@@ -52,12 +50,12 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
     public final SpigotMCUpdateHandler buildUpdateChecker(int resourceId) {
         return new SpigotMCUpdateHandler(this, resourceId);
     }
-
+    
     /**
      * {@inheritDoc}
      */
     public void log(String s) {
-        System.out.println(Utils.chat("[" + getName() + "] " + s));
+        System.out.println(Utils.toColor("[" + getName() + "] " + s));
     }
 
     /**
