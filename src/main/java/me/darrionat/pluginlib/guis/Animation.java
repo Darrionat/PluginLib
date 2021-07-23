@@ -2,11 +2,9 @@ package me.darrionat.pluginlib.guis;
 
 import me.darrionat.pluginlib.Plugin;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +21,10 @@ public class Animation {
      * The gui that the animation takes place in.
      */
     private final AnimatedGui gui;
+    /**
+     * The player involved in the animation.
+     */
+    private final Player p;
     /**
      * The id of the animation.
      */
@@ -47,18 +49,7 @@ public class Animation {
      * If {@code true} the {@code to} item will switch for every slot; otherwise, it will switch after all.
      */
     private final boolean each;
-    /**
-     * The name of {@code from}.
-     *
-     * @see #from
-     */
-    private String fromName;
-    /**
-     * The lore of {@code from}.
-     *
-     * @see #from
-     */
-    private List<String> fromLore;
+
     /**
      * The id of the task running the animation.
      */
@@ -79,6 +70,7 @@ public class Animation {
      *
      * @param plugin The plugin the animation belongs to.
      * @param gui    The gui the animation takes place within.
+     * @param p      The player involved in the animation.
      * @param id     The id of this animation.
      * @param slots  The slots affected by the animation.
      * @param from   The first item when the animation is not currently on a slot
@@ -87,27 +79,17 @@ public class Animation {
      * @param each   If {@code true} the {@code to} item will switch for every slot; otherwise, it will switch after
      *               all.
      */
-    Animation(Plugin plugin, AnimatedGui gui, int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
+    Animation(Plugin plugin, AnimatedGui gui, Player p, int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
         requireNonNull(plugin, gui, slots, from, to);
         this.plugin = plugin;
         this.gui = gui;
+        this.p = p;
         this.id = id;
         this.slots = slots;
         this.from = from;
         this.to = to;
         this.period = period;
         this.each = each;
-        ItemMeta meta = from.getItemMeta();
-        // Set the name and lore of from item
-        if (meta != null) {
-            fromName = meta.getDisplayName();
-            fromLore = meta.getLore();
-        }
-        if (fromName == null)
-            fromName = " ";
-        if (fromLore == null)
-            fromLore = new ArrayList<>();
-
     }
 
     /**
@@ -139,6 +121,15 @@ public class Animation {
     }
 
     /**
+     * Gets the player that is being shown the animation.
+     *
+     * @return Returns the player who has the {@link AnimatedGui} open.
+     */
+    public Player getPlayer() {
+        return p;
+    }
+
+    /**
      * Starts the animation within the {@link AnimatedGui}.
      * <p>
      * No action is taken if the animation is already running.
@@ -155,36 +146,58 @@ public class Animation {
      * Changes the slots of the animation and handles item cycling.
      */
     private void animate() {
-        // Iterate through animation slots
-        if (currSlot >= slots.length) {
-            // Back to start, new slot cycle
-            currSlot = 0;
-            // If it's not on each slot, change to item due to new slot cycle
-            if (!each) currItem++;
-        }
-        if (currItem >= to.length) currItem = 0;
-        updateGui();
-        // If change item on each slot, bump
-        if (each) currItem++;
+        // New item
+        ItemStack item;
+        if (currSlot == 0 && !each)
+            item = nextItem();
+        else
+            item = currentItem();
+        // Set previous slot back
+        gui.createItem(p, from, currentSlot());
+        // Set new slot
+        gui.createItem(p, item, nextSlot());
     }
 
     /**
-     * Updates the items within the {@link AnimatedGui}.
+     * Gets the active slot of the animation.
+     *
+     * @return The slot being shown in the animation.
      */
-    private void updateGui() {
-        // New item
-        ItemStack item = to[currItem];
-        ItemMeta meta = item.getItemMeta();
-        String name = null;
-        List<String> lore = null;
-        if (meta != null) {
-            name = meta.getDisplayName();
-            lore = meta.getLore();
-        }
-        // Set previous slot back
-        gui.createItem(from, slots[currSlot], fromName, fromLore);
-        // Set new slot
-        gui.createItem(item, slots[currSlot++], name, lore);
+    private int currentSlot() {
+        return slots[currSlot];
+    }
+
+    /**
+     * Iterates and gets the next slot in the animation.
+     *
+     * @return The next slot to be shown in the animation.
+     */
+    private int nextSlot() {
+        currSlot++;
+        if (currSlot >= slots.length)
+            currSlot = 0;
+        return currentSlot();
+    }
+
+    /**
+     * Gets the active item of the animation.
+     *
+     * @return The item being shown in the animation.
+     */
+    public ItemStack currentItem() {
+        return to[currItem];
+    }
+
+    /**
+     * Iterates and gets the next item in the animation.
+     *
+     * @return The next item to be shown in the animation.
+     */
+    private ItemStack nextItem() {
+        currItem++;
+        if (currItem >= to.length)
+            currItem = 0;
+        return currentItem();
     }
 
     /**
@@ -200,7 +213,7 @@ public class Animation {
         Bukkit.getScheduler().cancelTask(taskId);
         taskId = -1;
         for (int slot : slots)
-            gui.createItem(from, slot, fromName, fromLore);
+            gui.createItem(p, from, slot);
     }
 
     /**

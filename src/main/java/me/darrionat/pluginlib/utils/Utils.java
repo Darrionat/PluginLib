@@ -2,7 +2,11 @@ package me.darrionat.pluginlib.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,5 +38,44 @@ public class Utils {
             }
         }
         return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    /**
+     * Creates an item from given information.
+     *
+     * @param material   The material of the item.
+     * @param amount     The amount of the item.
+     * @param name       The name of the item. If {@code null}, the item's display name will be a single space.
+     * @param loreString The lore of the item represented by multiple strings. If {@code null}, item's lore will be
+     *                   empty.
+     * @return The created item.
+     */
+    public static ItemStack buildItem(XMaterial material, int amount, String name, String... loreString) {
+        List<String> lore = new ArrayList<>();
+        for (String s : loreString)
+            lore.add(Utils.toColor(s));
+        return buildItem(material, amount, name, lore);
+    }
+
+    /**
+     * Creates an item from given information.
+     *
+     * @param material The material of the item.
+     * @param amount   The amount of the item.
+     * @param name     The name of the item. If {@code null}, the item's display name will be a single space.
+     * @param lore     The lore of the item. If {@code null}, item's lore will be empty.
+     * @return The created item.
+     */
+    public static ItemStack buildItem(XMaterial material, int amount, String name, List<String> lore) {
+        ItemStack item = material.parseItem();
+        item.setAmount(amount);
+        ItemMeta meta = item.getItemMeta();
+        if (name == null)
+            name = " ";
+        meta.setDisplayName(Utils.toColor(name));
+        if (meta != null)
+            meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
     }
 }

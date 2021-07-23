@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,6 +33,10 @@ public abstract class Gui {
      * The size of the inventory.
      */
     protected final int size;
+    /**
+     * A map of players and the inventories they are shown.
+     */
+    private final HashMap<Player, Inventory> byPlayer = new HashMap<>();
     /**
      * Determines if a {@link Player} who clicks within the {@link Gui} is able to take items out of the displayed
      * inventory.
@@ -94,6 +98,13 @@ public abstract class Gui {
      */
     public Inventory getInventory(Player p) {
         Inventory toReturn = Bukkit.createInventory(null, size, name);
+        if (byPlayer.containsKey(p)) {
+            // Update player's inventory
+            toReturn = byPlayer.get(p);
+        } else {
+            // Set player's inventory
+            byPlayer.put(p, toReturn);
+        }
         getContents(p);
         toReturn.setContents(inv.getContents());
         return toReturn;
@@ -127,9 +138,34 @@ public abstract class Gui {
      * @return Returns the item placed within the {@link Gui}.
      */
     public ItemStack createItem(XMaterial material, int amount, int invSlot, String name, List<String> lore) {
-        ItemStack item = material.parseItem();
-        item.setAmount(amount);
-        return createItem(item, invSlot, name, lore);
+        return createItem(Utils.buildItem(material, amount, name, lore), invSlot);
+    }
+
+    /**
+     * Creates an item and places it directly into a player's instance of a {@link Gui}.
+     *
+     * @param p        The player with the open gui.
+     * @param material The material of the item.
+     * @param amount   The amount of the item to display.
+     * @param invSlot  The slot for the item to go into.
+     * @param name     The display name of the item.
+     * @param lore     The lore of the item.
+     * @return Returns the item placed directly into the player's {@link Gui}.
+     */
+    public ItemStack createItem(Player p, XMaterial material, int amount, int invSlot, String name, List<String> lore) {
+        return createItem(byPlayer.get(p), Utils.buildItem(material, amount, name, lore), invSlot);
+    }
+
+    /**
+     * Creates an item and places it directly into a player's instance of a {@link Gui}.
+     *
+     * @param item    The item to place within the inventory.
+     * @param p       The player with the open gui.
+     * @param invSlot The slot for the item to go into.
+     * @return Returns the item placed directly into the player's {@link Gui}.
+     */
+    public ItemStack createItem(Player p, ItemStack item, int invSlot) {
+        return createItem(byPlayer.get(p), item, invSlot);
     }
 
     /**
@@ -137,15 +173,21 @@ public abstract class Gui {
      *
      * @param item    The item to place within the inventory.
      * @param invSlot The slot for the item to go into.
-     * @param name    The display name of the item.
-     * @param lore    The lore of the item.
      * @return Returns the item placed within the {@link Gui}.
      */
-    protected ItemStack createItem(ItemStack item, int invSlot, String name, List<String> lore) {
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Utils.toColor(name));
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+    public ItemStack createItem(ItemStack item, int invSlot) {
+        return createItem(this.inv, item, invSlot);
+    }
+
+    /**
+     * Creates an item and places it within the {@link Gui}.
+     *
+     * @param inv     The inventory to place the item into.
+     * @param item    The item to place within the inventory.
+     * @param invSlot The slot for the item to go into.
+     * @return Returns the item placed within the {@link Gui}.
+     */
+    private ItemStack createItem(Inventory inv, ItemStack item, int invSlot) {
         inv.setItem(invSlot, item);
         return item;
     }

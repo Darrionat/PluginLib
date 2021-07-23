@@ -2,6 +2,7 @@ package me.darrionat.pluginlib.guis;
 
 import me.darrionat.pluginlib.Plugin;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,21 +42,22 @@ public abstract class AnimatedGui extends Gui {
     /**
      * Creates a new animation within the gui.
      *
+     * @param p      The player being shown the animation.
      * @param slots  The slots affected by the animation.
      * @param from   The first item when the animation is not currently on this slot.
      * @param to     The item to change the slot to when the animation occurs.
      * @param period The period between each cycle of the animation.
      * @return The id of the animation.
      */
-    public int createAnimation(int[] slots, ItemStack from, ItemStack to, long period) {
-        ItemStack[] toArr = new ItemStack[1];
-        toArr[0] = to;
-        return createAnimation(slots, from, toArr, period, false);
+    public int createAnimation(Player p, int[] slots, ItemStack from, ItemStack to, long period) {
+        ItemStack[] toArr = new ItemStack[]{to};
+        return createAnimation(p, slots, from, toArr, period, false);
     }
 
     /**
      * Creates a new animation within the gui.
      *
+     * @param p      The player being shown the animation.
      * @param slots  The slots affected by the animation.
      * @param from   The first item when the animation is not currently on this slot
      * @param to     The items to change the slot to when the animation occurs.
@@ -64,13 +66,14 @@ public abstract class AnimatedGui extends Gui {
      *               slots have been cycled through.
      * @return The id of the animation.
      */
-    public int createAnimation(int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
-        return buildAnimation(++addCount, slots, from, to, period, each);
+    public int createAnimation(Player p, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
+        return buildAnimation(p, ++addCount, slots, from, to, period, each);
     }
 
     /**
      * Creates a new animation within the gui that will begin once the delay has passed.
      *
+     * @param p      The player being shown the animation.
      * @param slots  The slots affected by the animation.
      * @param from   The first item when the animation is not currently on this slot.
      * @param to     The item to change the slot to when the animation occurs.
@@ -78,15 +81,15 @@ public abstract class AnimatedGui extends Gui {
      * @param delay  The amount of ticks to wait before beginning the animation.
      * @return The id of the animation.
      */
-    public int createDelayedAnimation(int[] slots, ItemStack from, ItemStack to, long period, long delay) {
-        ItemStack[] toArr = new ItemStack[1];
-        toArr[0] = to;
-        return createDelayedAnimation(slots, from, toArr, period, delay, false);
+    public int createDelayedAnimation(Player p, int[] slots, ItemStack from, ItemStack to, long period, long delay) {
+        ItemStack[] toArr = new ItemStack[]{to};
+        return createDelayedAnimation(p, slots, from, toArr, period, delay, false);
     }
 
     /**
      * Creates a new animation within the gui that will begin once the delay has passed.
      *
+     * @param p      The player being shown the animation.
      * @param slots  The slots affected by the animation.
      * @param from   The first item when the animation is not currently on this slot.
      * @param to     The items to change the slot to when the animation occurs.
@@ -96,16 +99,17 @@ public abstract class AnimatedGui extends Gui {
      *               slots have been cycled through.
      * @return The id of the animation.
      */
-    public int createDelayedAnimation(int[] slots, ItemStack from, ItemStack[] to, long period, long delay, boolean each) {
+    public int createDelayedAnimation(Player p, int[] slots, ItemStack from, ItemStack[] to, long period, long delay, boolean each) {
         int id = ++addCount;
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
-                buildAnimation(id, slots, from, to, period, each), delay);
+                buildAnimation(p, id, slots, from, to, period, each), delay);
         return id;
     }
 
     /**
      * Builds an {@link Animation} within the gui.
      *
+     * @param p      The player being shown the animation.
      * @param id     The id of the animation.
      * @param slots  The slots affected by the animation.
      * @param from   The first item when the animation is not currently on a slot
@@ -115,10 +119,10 @@ public abstract class AnimatedGui extends Gui {
      *               all.
      * @return Returns the id of the animation.
      */
-    private int buildAnimation(int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
-        Animation toReturn = new Animation(plugin, this, id, slots, from, to, period, each);
-        animations.put(id, toReturn);
-        toReturn.start();
+    private int buildAnimation(Player p, int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
+        Animation animation = new Animation(plugin, this, p, id, slots, from, to, period, each);
+        animations.put(id, animation);
+        animation.start();
         return id;
     }
 
@@ -148,7 +152,8 @@ public abstract class AnimatedGui extends Gui {
      * Removes and stops all animations in the gui.
      */
     public void stopAnimations() {
-        animations.forEach((id, animation) -> removeAnimation(id));
+        animations.forEach((id, animation) -> animation.stop());
+        animations.clear();
     }
 
     /**
