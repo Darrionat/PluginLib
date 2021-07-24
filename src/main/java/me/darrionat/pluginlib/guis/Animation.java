@@ -68,7 +68,6 @@ public class Animation {
      * <p>
      * Animations should not be constructed outside of an {@link AnimatedGui}.
      *
-     * @param plugin The plugin the animation belongs to.
      * @param gui    The gui the animation takes place within.
      * @param p      The player involved in the animation.
      * @param id     The id of this animation.
@@ -79,7 +78,8 @@ public class Animation {
      * @param each   If {@code true} the {@code to} item will switch for every slot; otherwise, it will switch after
      *               all.
      */
-    Animation(Plugin plugin, AnimatedGui gui, Player p, int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
+    Animation(AnimatedGui gui, Player p, int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
+        Plugin plugin = Plugin.getProject();
         requireNonNull(plugin, gui, slots, from, to);
         this.plugin = plugin;
         this.gui = gui;
@@ -184,7 +184,7 @@ public class Animation {
      *
      * @return The item being shown in the animation.
      */
-    public ItemStack currentItem() {
+    private ItemStack currentItem() {
         return to[currItem];
     }
 

@@ -120,7 +120,7 @@ public abstract class AnimatedGui extends Gui {
      * @return Returns the id of the animation.
      */
     private int buildAnimation(Player p, int id, int[] slots, ItemStack from, ItemStack[] to, long period, boolean each) {
-        Animation animation = new Animation(plugin, this, p, id, slots, from, to, period, each);
+        Animation animation = new Animation(this, p, id, slots, from, to, period, each);
         animations.put(id, animation);
         animation.start();
         return id;
