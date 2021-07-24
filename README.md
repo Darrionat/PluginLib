@@ -23,7 +23,7 @@ To add this project to your Maven project make sure you have the following repos
 
 <dependency>
     <groupId>com.github.Darrionat.PluginLib</groupId>
-    <artifactId>PluginLib</artifactId>
+    <artifactId>core</artifactId>
     <version>version</version>
 </dependency>
 ```
