@@ -50,11 +50,13 @@ public class LegacyEnchantment extends Enchantment {
      * @param name The name of the enchantment, not case sensitive.
      * @return The id of the enchantment.
      */
+    @SuppressWarnings({"deprecation"})
     private static int createNewID(String name) {
         int id = 101;
         // If the enchantment name already exists, just return it's id
         Enchantment byName = Enchantment.getByName(name);
         if (byName != null && byName.getName().equalsIgnoreCase(name)) {
+
             id = byName.getId();
             idNameMap.put(id, name);
             return id;

@@ -83,15 +83,6 @@ public abstract class CustomEnchantment {
     }
 
     /**
-     * The starting level of the enchantment.
-     *
-     * @return The starting level of the custom enchantment, always one.
-     */
-    public int getStartLevel() {
-        return 1;
-    }
-
-    /**
      * Gets the maximum level of the custom enchantment.
      *
      * @return The highest level the enchantment can go to.

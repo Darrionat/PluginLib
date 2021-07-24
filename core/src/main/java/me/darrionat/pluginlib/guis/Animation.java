@@ -137,6 +137,7 @@ public class Animation {
      * @see #running()
      * @see #stop()
      */
+    @SuppressWarnings({"deprecation"})
     public void start() {
         if (running()) return;
         taskId = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, this::animate, 0L, period);

@@ -18,9 +18,9 @@ public class LegacyService {
      * Creates a new enchantment object that is created from the LegacyEnchantmentWrapper in order to support {@code
      * pre-1.13}
      *
-     * @param name     the name of the enchantment
-     * @param maxLevel the max level of the enchantment
-     * @return returns an {@code Enchantment} constructed with the {@code 1.8-1.12} Enchantment class
+     * @param name     The name of the enchantment.
+     * @param maxLevel The max level of the enchantment.
+     * @return Returns an {@code Enchantment} constructed with the {@code pre-1.13} Enchantment class.
      */
     public static Enchantment createEnchantment(String name, int maxLevel) {
         LegacyEnchantment ench = new LegacyEnchantment(name, maxLevel);
