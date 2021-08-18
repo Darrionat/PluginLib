@@ -43,7 +43,6 @@ public class BuildSerializer extends FileBuilder {
     private static final String NEW_COLUMN = ";";
     private static final String NEW_BLOCK = "-";
     private static final String DATA_SEP = "%";
-    private final Plugin plugin;
 
     /**
      * Constructs a new {@code BuildSerializer} to handle reading and writing of {@link Clipboard}s.
@@ -52,7 +51,6 @@ public class BuildSerializer extends FileBuilder {
      */
     public BuildSerializer(Plugin plugin) {
         super(plugin, BUILD_FOLDER);
-        this.plugin = plugin;
         if (!exists())
             createFile();
     }
@@ -152,23 +150,23 @@ public class BuildSerializer extends FileBuilder {
         BlockData[][] toReturn = new BlockData[height][width];
         // Splits the columns
         String[] cols = line.split(NEW_COLUMN);
+
         for (int y = 0; y < cols.length; y++) {
             String col = cols[y];
             // Blocks within the column
             String[] blocks = col.split(NEW_BLOCK);
             for (int z = 0; z < cols.length; z++) {
                 // hash + DATA_SEP + blockData
-                String allBlockData = blocks[z];
-                String[] splitData = allBlockData.split(DATA_SEP);
-
+                String[] splitData = blocks[z].split(DATA_SEP);
                 int hash = Integer.parseInt(splitData[0]);
+                String data = splitData[1];
+                // Find the type
                 XMaterial type = MaterialService.findMaterial(hash);
                 if (type == null)
                     throw new NullPointerException("Invalid Material");
                 // Get the block data
-                BlockData data = Bukkit.createBlockData(type.parseMaterial(), splitData[1]);
-
-                toReturn[y][z] = data;
+                BlockData blockData = Bukkit.createBlockData(type.parseMaterial(), data);
+                toReturn[y][z] = blockData;
             }
         }
         return toReturn;

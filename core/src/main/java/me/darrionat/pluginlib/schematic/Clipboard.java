@@ -125,7 +125,7 @@ public class Clipboard {
      * @return Returns a three-dimensional array containing all {@code BlockState}s within that area.
      * @throws IllegalArgumentException Thrown when the selection is not complete.
      */
-    public static BlockData[][][] copy(Selection selection) {
+    public static BlockData[][][] copy(Selection selection) throws IllegalArgumentException {
         if (!selection.complete())
             throw new IllegalArgumentException("Selection is not complete");
         // Differences between each corner
