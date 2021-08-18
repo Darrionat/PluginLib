@@ -1,5 +1,6 @@
 package me.darrionat.pluginlib.commands;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.darrionat.pluginlib.ErrorHandler;
 import me.darrionat.pluginlib.Plugin;
 import org.bukkit.command.CommandSender;

@@ -6,16 +6,15 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * A utility to create a {@link File}.
+ * A utility to create a {@link java.io.File}.
  */
-public abstract class
-FileBuilder {
+public abstract class FileBuilder {
     /**
      * The plugin the file being built belongs to.
      */
     protected final Plugin plugin;
     /**
-     * The name of the {@link File}.
+     * The name of the {@link java.io.File}.
      */
     protected final String name;
 
@@ -23,7 +22,7 @@ FileBuilder {
      * Creates a new {@link FileBuilder}.
      *
      * @param plugin   The plugin the file being built belongs to.
-     * @param fileName The name of the {@link File}.
+     * @param fileName The name of the {@link java.io.File}.
      * @see FileBuilder#getFile()
      * @see FileBuilder#createFile()
      */
@@ -53,7 +52,8 @@ FileBuilder {
     }
 
     /**
-     * Creates the {@link File} within the data folder of the {@link Plugin}. Does nothing if the file already exists.
+     * Creates the {@link File} within the data folder of the {@link Plugin}. Does nothing if the file already
+     * exists.
      */
     public void createFile() {
         File file = getFile();

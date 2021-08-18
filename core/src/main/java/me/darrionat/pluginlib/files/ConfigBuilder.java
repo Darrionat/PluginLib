@@ -62,9 +62,11 @@ public class ConfigBuilder extends FileBuilder {
      * @see ConfigBuilder#updateConfig
      */
     public Config build() {
-        if (!exists())
-            if (!builtIn) createFile();
-            else plugin.saveResource(name, false);
+        if (!exists() && !builtIn) {
+            createFile();
+        } else if (builtIn) {
+            plugin.saveResource(name, false);
+        }
         LocalConfig config = new LocalConfig(plugin, getFile());
         if (update)
             config.sync();
