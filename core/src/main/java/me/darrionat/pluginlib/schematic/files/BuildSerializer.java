@@ -102,8 +102,6 @@ public class BuildSerializer extends FileBuilder {
         writer.close();
     }
 
-    //  Bukkit.createBlockData(null, "");
-
     /**
      * Loads a build into a {@link Clipboard}.
      *

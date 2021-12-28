@@ -1,9 +1,12 @@
 package me.darrionat.pluginlib.schematic;
 
 import me.darrionat.pluginlib.schematic.files.BuildSerializer;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+
+import java.util.Objects;
 
 /**
  * Represents a 3-dimensional copy of {@link Block}s. A {@code Clipboard} can be rotated, copied, and pasted into a
@@ -18,6 +21,9 @@ import org.bukkit.block.data.BlockData;
  * @see BuildSerializer
  */
 public class Clipboard {
+    /**
+     * The BlockData held within the clipboard. The data is saved by length, width, height or x,y,z.
+     */
     private final BlockData[][][] blocks;
     private final int length;
     private final int height;
@@ -144,11 +150,99 @@ public class Clipboard {
         }
         return new Clipboard(rotation);
     }
-    /*
-    public void paste(Location loc, Direction direction) {
+
+    /**
+     * Pastes this clipboard at a given location and direction. All previous blocks at the pasted location will be
+     * removed.
+     *
+     * @param loc       The location to paste at, representing the origin of a paste
+     * @param direction The direction of which to paste. If {@code Direction.NORTH}, the build will paste northeast of
+     *                  the player. If  {@code Direction.EAST}, then the build will paste southeast of the player, and
+     *                  so on
+     * @return Returns the previous state of the pasted location
+     */
+    public Clipboard paste(Location loc, Direction direction) {
+        return pasteData(loc, direction, true);
+    }
+
+    /**
+     * Pastes this clipboard at a given location and direction. All previous blocks at the pasted location will be
+     * removed and not saved. Use only if copying the previous state is too computationally intensive.
+     *
+     * @param loc       The location to paste at, representing the origin of a paste
+     * @param direction The direction of which to paste. If {@code Direction.NORTH}, the build will paste northeast of
+     *                  the player. If  {@code Direction.EAST}, then the build will paste southeast of the player, and
+     *                  so on
+     */
+    public void hardPaste(Location loc, Direction direction) {
+        pasteData(loc, direction, false);
+    }
+
+    /**
+     * Pastes this clipboard at a given location and direction. All previous blocks at the pasted location will be
+     * removed.
+     *
+     * @param loc              The location to paste at, representing the origin of a paste
+     * @param direction        The direction of which to paste. If {@code Direction.NORTH}, the build will paste
+     *                         northeast of the player. If  {@code Direction.EAST}, then the build will paste southeast
+     *                         of the player, and so on
+     * @param getPreviousState If {@code true}, then the state before pasting will be saved into a clipboard, the
+     *                         opposite can be said for {@code false}
+     * @return If {@param getPreviousState} is {@code true} returns the previous state; otherwise {@code null}.
+     */
+    private Clipboard pasteData(Location loc, Direction direction, boolean getPreviousState) {
+        Objects.requireNonNull(loc, "Location is null");
+        World world = loc.getWorld();
+        Objects.requireNonNull(world, "World is null");
+        // Default direction is arbitrarily NORTH
         if (direction == null)
             direction = Direction.NORTH;
-        // TODO implement
+
+        // Behaviors of the direction
+        int incX = direction.increasesX().intValue(), incZ = direction.increasesZ().intValue();
+
+        // Follows a directional pattern to get the difference from the location.
+        // Possible values of xDiff and zDiff are -1, 0, or 1.
+        int xDiff = incX == 0 ? direction.getNextDirection().increasesX().intValue() : incX;
+        int zDiff = incZ == 0 ? direction.getNextDirection().increasesZ().intValue() : incZ;
+
+        // Copies the previous state into a new clipboard
+        Clipboard previousState = null;
+        if (getPreviousState)
+            previousState = getCurrentState(loc, xDiff, zDiff);
+
+        int blockX = loc.getBlockX(), blockY = loc.getBlockY(), blockZ = loc.getBlockZ();
+
+        // Pasting into world
+        for (int x = 0; Math.abs(x) < length; x += xDiff) {
+            for (int y = 0; y < height; y++) {
+                for (int z = 0; Math.abs(z) < width; z += zDiff) {
+                    // Build the location
+                    Location pasteLoc = new Location(world, blockX + x, blockY + y, blockZ + z);
+                    // Paste block data
+                    world.getBlockAt(pasteLoc).setBlockData(blocks[Math.abs(x)][y][Math.abs(z)]);
+                }
+            }
+        }
+        return previousState;
     }
+
+    /**
+     * Copies the area that this paste action will cover into a new clipboard.
+     *
+     * @param loc1  The origin.
+     * @param xDiff The step of the x-axis, defining what direction to go
+     * @param zDiff The step of the z-axis, defining what direction to go
+     * @return The current state of the selection
      */
+    private Clipboard getCurrentState(Location loc1, int xDiff, int zDiff) {
+        // Subtract 1 from x,y,z to not include loc1 twice
+        Location loc2 = new Location(loc1.getWorld(),
+                loc1.getBlockX() + xDiff * length,
+                loc1.getBlockY() + height,
+                loc1.getBlockZ() + zDiff * width)
+                .subtract(1, 1, 1);
+        Selection selection = new Selection(loc1, loc2);
+        return new Clipboard(selection);
+    }
 }

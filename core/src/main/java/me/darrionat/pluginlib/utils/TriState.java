@@ -9,7 +9,22 @@ package me.darrionat.pluginlib.utils;
  * The TriState enum can also be thought of as the following: {@code TRUE=1}, {@code NONE=0}, {@code FALSE=-1}.
  */
 public enum TriState {
-    TRUE,
-    FALSE,
-    NONE;
+    TRUE(1),
+    FALSE(-1),
+    NONE(0);
+
+    private final int value;
+
+    TriState(int value) {
+        this.value = value;
+    }
+
+    /**
+     * Gets this state as an integer.
+     *
+     * @return A TriState value as an integer.
+     */
+    public int intValue() {
+        return value;
+    }
 }

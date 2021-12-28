@@ -84,4 +84,20 @@ public enum Direction {
     public TriState increasesZ() {
         return increasesZ;
     }
+
+    /**
+     * Gets the next direction. The cycle corresponds to NORTH, EAST, SOUTH, WEST, and so on.
+     *
+     * @return The next cardinal direction in a clockwise rotation.
+     */
+    public Direction getNextDirection() {
+        if (this == NORTH)
+            return EAST;
+        if (this == EAST)
+            return SOUTH;
+        if (this == SOUTH)
+            return WEST;
+        else
+            return NORTH;
+    }
 }
