@@ -1,7 +1,7 @@
 # PluginLib ![maven](https://img.shields.io/github/v/release/Darrionat/PluginLib)
 
 A project that aims to make the creation of plugins a faster and easier process. This project supports Minecraft
-1.8.8-1.16.x.
+1.8.8-1.18.x.
 
 ## Maven ![maven](https://img.shields.io/github/v/release/Darrionat/PluginLib)
 
