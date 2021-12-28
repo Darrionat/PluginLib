@@ -10,6 +10,8 @@ import org.bukkit.block.data.BlockData;
  * {@code World}.
  * <p>
  * Loading and saving {@code Clipboard}s should be handled through a {@link BuildSerializer}.
+ * <p>
+ * Clipboards are immutable.
  *
  * @see #copy(Selection)
  * @see #rotate()
@@ -56,6 +58,36 @@ public class Clipboard {
         this.length = xLength;
         this.height = yLength;
         this.width = zLength;
+    }
+
+    /**
+     * Views and captures the states of all blocks between two locations (inclusive). The returned array follows by
+     * {@code [x][y][z]}.
+     *
+     * @param selection The selection to copy.
+     * @return Returns a three-dimensional array containing all {@code BlockState}s within that area.
+     * @throws IllegalArgumentException Thrown when the selection is not complete.
+     */
+    public static BlockData[][][] copy(Selection selection) throws IllegalArgumentException {
+        if (!selection.complete())
+            throw new IllegalArgumentException("Selection is not complete");
+        // Differences between each corner
+        int xDiff = selection.getXDiff(), yDiff = selection.getYDiff(), zDiff = selection.getZDiff();
+        // Init array
+        BlockData[][][] blocks = new BlockData[xDiff + 1][yDiff + 1][zDiff + 1];
+        int lowX = selection.getLowX();
+        int lowY = selection.getLowY();
+        int lowZ = selection.getLowZ();
+        World world = selection.getWorld();
+
+        for (int x = 0; x <= xDiff; x++) {
+            for (int y = 0; y <= yDiff; y++) {
+                for (int z = 0; z <= zDiff; z++) {
+                    blocks[x][y][z] = world.getBlockAt(lowX + x, lowY + y, lowZ + z).getBlockData();
+                }
+            }
+        }
+        return blocks;
     }
 
     /**
@@ -112,38 +144,11 @@ public class Clipboard {
         }
         return new Clipboard(rotation);
     }
-
-//    public void paste(Location loc, String directionalEnum) {
-//       TODO implement
-//    }
-
-    /**
-     * Views and captures the states of all blocks between two locations (inclusive). The returned array follows by
-     * {@code [x][y][z]}.
-     *
-     * @param selection The selection to copy.
-     * @return Returns a three-dimensional array containing all {@code BlockState}s within that area.
-     * @throws IllegalArgumentException Thrown when the selection is not complete.
-     */
-    public static BlockData[][][] copy(Selection selection) throws IllegalArgumentException {
-        if (!selection.complete())
-            throw new IllegalArgumentException("Selection is not complete");
-        // Differences between each corner
-        int xDiff = selection.getXDiff(), yDiff = selection.getYDiff(), zDiff = selection.getZDiff();
-        // Init array
-        BlockData[][][] blocks = new BlockData[xDiff + 1][yDiff + 1][zDiff + 1];
-        int lowX = selection.getLowX();
-        int lowY = selection.getLowY();
-        int lowZ = selection.getLowZ();
-        World world = selection.getWorld();
-
-        for (int x = 0; x <= xDiff; x++) {
-            for (int y = 0; y <= yDiff; y++) {
-                for (int z = 0; z <= zDiff; z++) {
-                    blocks[x][y][z] = world.getBlockAt(lowX + x, lowY + y, lowZ + z).getBlockData();
-                }
-            }
-        }
-        return blocks;
+    /*
+    public void paste(Location loc, Direction direction) {
+        if (direction == null)
+            direction = Direction.NORTH;
+        // TODO implement
     }
+     */
 }
