@@ -8,11 +8,10 @@ import java.util.HashMap;
 /**
  * The {@code MaterialService} is a handler for all materials contained within the {@link XMaterial} enum.
  * <p>
- * This service operates by a {@link HashMap}. The map stores all material hashes with their
- * associated material as the value for quick reverse lookup.
+ * This service operates by a {@link HashMap}. The map stores all material hashes with their associated material as the
+ * value for quick reverse lookup.
  *
  * @see #findMaterial(int)
- * @see #hash(XMaterial)
  */
 public class MaterialService {
     /**
@@ -20,15 +19,13 @@ public class MaterialService {
      * <p>
      * The map of {@code <Integer, XMaterial>} allows quick reverse lookup so that an {@code XMaterial} can be found
      * from its hash.
-     * <p>
-     * Hashes can be determined with {@link #hash(XMaterial)}.
      */
     public static final HashMap<Integer, XMaterial> MATERIAL_HASH_MAP = new HashMap<>();
 
     // Statically initializes the map
     static {
         for (XMaterial material : XMaterial.values()) {
-            MATERIAL_HASH_MAP.put(hash(material), material);
+            MATERIAL_HASH_MAP.put(material.hashCode(), material);
         }
     }
 
@@ -49,7 +46,7 @@ public class MaterialService {
      * @return The hash of the material, for quick lookup.
      */
     public static int hash(Material material) {
-        return hash(XMaterial.matchXMaterial(material));
+        return XMaterial.matchXMaterial(material).hashCode();
     }
 
     /**
@@ -57,7 +54,9 @@ public class MaterialService {
      *
      * @param material The material to be hashed.
      * @return The hash of the material, for quick lookup.
+     * @deprecated Use {@code material.hashCode()} instead.
      */
+    @Deprecated
     public static int hash(XMaterial material) {
         return material.hashCode();
     }

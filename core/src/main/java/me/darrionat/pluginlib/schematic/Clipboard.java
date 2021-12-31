@@ -1,5 +1,6 @@
 package me.darrionat.pluginlib.schematic;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.darrionat.pluginlib.schematic.files.BuildSerializer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -159,23 +160,27 @@ public class Clipboard {
      * @param direction The direction of which to paste. If {@code Direction.NORTH}, the build will paste northeast of
      *                  the player. If  {@code Direction.EAST}, then the build will paste southeast of the player, and
      *                  so on
+     * @param fill      If {@code true}, blocks in the pasted location will be removed if this clipboard contains air
+     *                  for that location
      * @return Returns the previous state of the pasted location
      */
-    public Clipboard paste(Location loc, Direction direction) {
-        return pasteData(loc, direction, true);
+    public Clipboard paste(Location loc, Direction direction, boolean fill) {
+        return pasteData(loc, direction, fill, true);
     }
 
     /**
-     * Pastes this clipboard at a given location and direction. All previous blocks at the pasted location will be
-     * removed and not saved. Use only if copying the previous state is too computationally intensive.
+     * Pastes this clipboard at a given location and direction. Previous blocks will not be returned. Use only if
+     * copying the previous state is too computationally intensive.
      *
      * @param loc       The location to paste at, representing the origin of a paste
      * @param direction The direction of which to paste. If {@code Direction.NORTH}, the build will paste northeast of
      *                  the player. If  {@code Direction.EAST}, then the build will paste southeast of the player, and
      *                  so on
+     * @param fill      If {@code true}, blocks in the pasted location will be removed if this clipboard contains air
+     *                  for that location
      */
-    public void hardPaste(Location loc, Direction direction) {
-        pasteData(loc, direction, false);
+    public void hardPaste(Location loc, Direction direction, boolean fill) {
+        pasteData(loc, direction, fill, false);
     }
 
     /**
@@ -186,11 +191,13 @@ public class Clipboard {
      * @param direction        The direction of which to paste. If {@code Direction.NORTH}, the build will paste
      *                         northeast of the player. If  {@code Direction.EAST}, then the build will paste southeast
      *                         of the player, and so on
-     * @param getPreviousState If {@code true}, then the state before pasting will be saved into a clipboard, the
-     *                         opposite can be said for {@code false}
+     * @param fill             If {@code true}, blocks in the pasted location will be removed if this clipboard contains
+     *                         air for that location
+     * @param getPreviousState If {@code true}, then the state before pasting will be saved into a clipboard. If {@code
+     *                         false}, then the previous state is ignored.
      * @return If {@param getPreviousState} is {@code true} returns the previous state; otherwise {@code null}.
      */
-    private Clipboard pasteData(Location loc, Direction direction, boolean getPreviousState) {
+    private Clipboard pasteData(Location loc, Direction direction, boolean fill, boolean getPreviousState) {
         Objects.requireNonNull(loc, "Location is null");
         World world = loc.getWorld();
         Objects.requireNonNull(world, "World is null");
@@ -203,8 +210,9 @@ public class Clipboard {
 
         // Follows a directional pattern to get the difference from the location.
         // Possible values of xDiff and zDiff are -1, 0, or 1.
-        int xDiff = incX == 0 ? direction.getNextDirection().increasesX().intValue() : incX;
-        int zDiff = incZ == 0 ? direction.getNextDirection().increasesZ().intValue() : incZ;
+        Direction nextDir = direction.getNextDirection();
+        int xDiff = incX == 0 ? nextDir.increasesX().intValue() : incX;
+        int zDiff = incZ == 0 ? nextDir.increasesZ().intValue() : incZ;
 
         // Copies the previous state into a new clipboard
         Clipboard previousState = null;
@@ -217,10 +225,15 @@ public class Clipboard {
         for (int x = 0; Math.abs(x) < length; x += xDiff) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; Math.abs(z) < width; z += zDiff) {
-                    // Build the location
+                    // The current BlockData
+                    BlockData data = blocks[Math.abs(x)][y][Math.abs(z)];
+                    // Consider fill behavior
+                    if (!fill && data.getMaterial().equals(XMaterial.AIR.parseMaterial()))
+                        continue;
+                    // The current paste location
                     Location pasteLoc = new Location(world, blockX + x, blockY + y, blockZ + z);
                     // Paste block data
-                    world.getBlockAt(pasteLoc).setBlockData(blocks[Math.abs(x)][y][Math.abs(z)]);
+                    world.getBlockAt(pasteLoc).setBlockData(data);
                 }
             }
         }
