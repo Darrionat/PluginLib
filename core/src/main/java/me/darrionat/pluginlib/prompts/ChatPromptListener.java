@@ -3,6 +3,7 @@ package me.darrionat.pluginlib.prompts;
 import me.darrionat.pluginlib.Plugin;
 import me.darrionat.pluginlib.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,7 +70,7 @@ public class ChatPromptListener implements Listener {
         Task task = getPlayerTask(p);
         if (task == null) return;
 
-        String text = e.getMessage();
+        String text = ChatColor.stripColor(e.getMessage());
         if (!task.valid(text)) {
             p.sendMessage(Utils.toColor(task.onFail()));
             return;

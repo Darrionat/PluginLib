@@ -1,7 +1,5 @@
 package me.darrionat.pluginlib.mysql;
 
-import me.darrionat.pluginlib.Plugin;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,7 +11,6 @@ import java.sql.SQLException;
 public class DatabaseConnection {
     private final transient String host, database, username, password;
     private final transient int port;
-    private final Plugin plugin;
     private Connection connection;
 
     /**
@@ -38,7 +35,6 @@ public class DatabaseConnection {
      * @param password The login password
      */
     public DatabaseConnection(String host, int port, String database, String username, String password) {
-        this.plugin = Plugin.getProject();
         this.host = host;
         this.database = database;
         this.username = username;
@@ -51,7 +47,7 @@ public class DatabaseConnection {
      *
      * @return {@code true} if a connection exists and is open; {@code false} otherwise.
      */
-    public boolean enabled() {
+    public synchronized boolean enabled() {
         try {
             return connection != null && !connection.isClosed();
         } catch (SQLException exe) {
@@ -67,10 +63,8 @@ public class DatabaseConnection {
      */
     public void connect() {
         try {
-            synchronized (plugin) {
-                if (enabled()) {
-                    throw new IllegalStateException("Connection already established");
-                }
+            if (enabled()) {
+                throw new IllegalStateException("Connection already established");
             }
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(
