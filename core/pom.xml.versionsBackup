@@ -5,7 +5,7 @@
     <parent>
         <artifactId>pluginlib-parent</artifactId>
         <groupId>me.darrionat</groupId>
-        <version>1.8</version>
+        <version>1.4.0 - SNAPSHOT 2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>core</artifactId>
@@ -22,14 +22,14 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- XSeries -->
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>11.2.1</version>
+            <version>8.2.0</version>
             <scope>compile</scope>
         </dependency>
         <!-- Legacy Wrapper Module -->
@@ -37,12 +37,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>legacy-wrapper</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -77,6 +71,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

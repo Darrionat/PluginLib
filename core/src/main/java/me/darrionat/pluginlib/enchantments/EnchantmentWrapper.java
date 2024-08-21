@@ -5,6 +5,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Represents a wrapper class that constructs an enchantment with a {@code NamespacedKey} instead of an {@code id}.
@@ -22,13 +25,20 @@ public class EnchantmentWrapper extends Enchantment {
     private final int maxLevel;
 
     /**
+     * Key of this enchantment.
+     */
+    private final NamespacedKey key;
+
+    /**
      * Constructs a new {@code Enchantment} with a given name.
      *
      * @param name     The name of the enchantment.
      * @param maxLevel The max level of the enchantment.
      */
     public EnchantmentWrapper(String name, int maxLevel) {
-        super(getKey(name));
+        super();
+        Objects.requireNonNull(name);
+        this.key = new NamespacedKey(Plugin.getProject(), name);
         this.name = name;
         this.maxLevel = maxLevel;
     }
@@ -55,7 +65,7 @@ public class EnchantmentWrapper extends Enchantment {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
@@ -92,5 +102,15 @@ public class EnchantmentWrapper extends Enchantment {
     @Override
     public EnchantmentTarget getItemTarget() {
         return null;
+    }
+
+    @Override
+    public @NotNull NamespacedKey getKey() {
+        return key;
+    }
+
+    @Override
+    public @NotNull String getTranslationKey() {
+        return name;
     }
 }
