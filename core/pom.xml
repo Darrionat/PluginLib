@@ -5,7 +5,7 @@
     <parent>
         <artifactId>pluginlib-parent</artifactId>
         <groupId>me.darrionat</groupId>
-        <version>1.8</version>
+        <version>1.8.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>core</artifactId>
@@ -52,7 +52,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.0</version>
                 <configuration>
                     <relocations>
                         <relocation>
