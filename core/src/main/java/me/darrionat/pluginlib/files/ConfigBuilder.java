@@ -28,6 +28,17 @@ public class ConfigBuilder extends FileBuilder {
     }
 
     /**
+     * Creates a {@link ConfigBuilder} object which can be used to create {@link Config} objects.
+     *
+     * @param plugin       The plugin the {@link Config} being built belongs to.
+     * @param fileName     The name of the {@link File} that the config represents.
+     * @param subDirectory The name of the subdirectory of the plugin's directory to save this config in.
+     */
+    public ConfigBuilder(Plugin plugin, String fileName, String subDirectory) {
+        super(plugin, fileName, subDirectory);
+    }
+
+    /**
      * Changes the default method of creating a new file to using a default resource within the {@link Plugin}.
      *
      * @return Returns the {@link ConfigBuilder}.
@@ -70,8 +81,7 @@ public class ConfigBuilder extends FileBuilder {
             }
         }
         LocalConfig config = new LocalConfig(plugin, getFile());
-        if (update)
-            config.sync();
+        if (update) config.sync();
         return config;
     }
 }
