@@ -19,6 +19,11 @@ public abstract class FileBuilder {
     protected final String name;
 
     /**
+     * The subdirectory of the plugin that the file will be in.
+     */
+    protected final String directory;
+
+    /**
      * Creates a new {@link FileBuilder}.
      *
      * @param plugin   The plugin the file being built belongs to.
@@ -27,8 +32,22 @@ public abstract class FileBuilder {
      * @see FileBuilder#createFile()
      */
     public FileBuilder(Plugin plugin, String fileName) {
+        this(plugin, fileName, null);
+    }
+
+    /**
+     * Creates a new {@link FileBuilder}.
+     *
+     * @param plugin       The plugin the file being built belongs to.
+     * @param fileName     The name of the {@link java.io.File}.
+     * @param subDirectory A subdirectory within the plugin's folder to contain the file.
+     * @see FileBuilder#getFile()
+     * @see FileBuilder#createFile()
+     */
+    public FileBuilder(Plugin plugin, String fileName, String subDirectory) {
         this.plugin = plugin;
         this.name = fileName;
+        this.directory = subDirectory;
     }
 
     /**
@@ -39,7 +58,10 @@ public abstract class FileBuilder {
      * @see Plugin#getDataFolder()
      */
     public File getFile() {
-        return new File(plugin.getDataFolder(), name);
+        if (directory == null)
+            return new File(plugin.getDataFolder(), name);
+        else
+            return new File(plugin.getDataFolder() + File.separator + directory, name);
     }
 
     /**
