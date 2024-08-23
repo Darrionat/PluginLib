@@ -58,10 +58,8 @@ public abstract class FileBuilder {
      * @see Plugin#getDataFolder()
      */
     public File getFile() {
-        if (directory == null)
-            return new File(plugin.getDataFolder(), name);
-        else
-            return new File(plugin.getDataFolder() + File.separator + directory, name);
+        if (directory == null) return new File(plugin.getDataFolder(), name);
+        else return new File(plugin.getDataFolder() + File.separator + directory, name);
     }
 
     /**
@@ -73,15 +71,30 @@ public abstract class FileBuilder {
         return getFile().exists();
     }
 
+    private void setupSubdirectory() {
+        File dir = new File(plugin.getDataFolder() + File.separator + directory);
+        // Only attempt to create if it doesn't already exist
+        if (!dir.exists()) {
+            if (dir.mkdir()) {
+                plugin.log("Plugin folder " + directory + " created");
+            } else {
+                plugin.log("Failed to create " + directory + " directory inside of plugin folder");
+            }
+        }
+    }
+
     /**
      * Creates the {@link File} within the data folder of the {@link Plugin}. Does nothing if the file already
      * exists.
      */
     public void createFile() {
+        if (directory != null) {
+            setupSubdirectory();
+        }
         File file = getFile();
         try {
             file.createNewFile();
-            plugin.log("Saving " + file.getName());
+            plugin.log("Created " + file.getName());
         } catch (IOException exe) {
             plugin.log("Failed to create " + file.getName());
             exe.printStackTrace();
