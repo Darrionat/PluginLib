@@ -1,6 +1,7 @@
 package me.darrionat.pluginlib;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.darrionat.pluginlib.bstats.Metrics;
 import me.darrionat.pluginlib.enchantments.EnchantmentHandler;
 import me.darrionat.pluginlib.enchantments.EnchantmentService;
 import me.darrionat.pluginlib.enchantments.LegacyEnchantmentService;
@@ -17,6 +18,7 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
     private static Plugin instance;
     private GuiHandler guiHandler;
     private EnchantmentHandler enchantmentHandler;
+    protected Metrics metrics;
 
     /**
      * Gets the current project of the {@link Plugin}.
@@ -41,6 +43,7 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
         else
             enchantmentHandler = new EnchantmentService();
         initPlugin();
+        enableMetrics();
     }
 
     /**
@@ -55,14 +58,25 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
     }
 
     /**
+     * Gets the resource id of this project for SpigotMC.
+     *
+     * @return The project id of the resource on SpigotMC.
+     */
+    public abstract int getSpigotResourceId();
+
+    public void enableMetrics() {
+        this.metrics = new Metrics(this, getSpigotResourceId());
+    }
+
+    /**
      * Creates a new {@link SpigotMCUpdateHandler}.
      *
-     * @param resourceId The project id of the resource on SpigotMC.
      * @return Returns a {@link SpigotMCUpdateHandler} for this plugin.
      */
-    public final SpigotMCUpdateHandler buildUpdateChecker(int resourceId) {
-        return new SpigotMCUpdateHandler(this, resourceId);
+    public final SpigotMCUpdateHandler buildUpdateChecker() {
+        return new SpigotMCUpdateHandler(this, getSpigotResourceId());
     }
+
 
     /**
      * Determines if the server version is {@code pre-1.13}.
@@ -77,6 +91,6 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
      * {@inheritDoc}
      */
     public void log(String s) {
-        System.out.println(Utils.toColor("[" + getName() + "] " + s));
+        this.getLogger().info(Utils.toColor(s));
     }
 }
