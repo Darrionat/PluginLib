@@ -1,6 +1,9 @@
 package me.darrionat.pluginlib.commands;
 
+import org.bukkit.entity.Player;
+
 import java.util.List;
+import java.util.Set;
 
 /**
  * An interface used to define which commands are able to have subcommands.
@@ -11,7 +14,7 @@ public interface HeritableCommand {
      *
      * @return Returns a list of all subcommands this command has.
      */
-    List<SubCommand> getSubCommands();
+    Set<String> getSubCommands();
 
     /**
      * Adds a {@link SubCommand} to the {@link HeritableCommand}.

@@ -8,8 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The {@link BaseCommand} class represents a registered {@link PluginCommand}.
@@ -17,7 +18,8 @@ import java.util.List;
 public abstract class BaseCommand implements CommandExecutor, HeritableCommand {
     private final ErrorHandler errorHandler;
     private final String permission;
-    private final List<SubCommand> subCommands = new ArrayList<>();
+    //    private final List<SubCommand> subCommands = new ArrayList<>();
+    private final Map<String, SubCommand> subCommandMap = new HashMap<>();
 
     /**
      * Creates and registers a new {@link BaseCommand} object.
@@ -37,9 +39,8 @@ public abstract class BaseCommand implements CommandExecutor, HeritableCommand {
      */
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Permission
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-            if (!p.hasPermission(permission)) {
+        if (sender instanceof Player p) {
+            if (!playerHasPermission(p)) {
                 errorHandler.noPermissionError(p, permission);
                 return true;
             }
@@ -51,28 +52,41 @@ public abstract class BaseCommand implements CommandExecutor, HeritableCommand {
             return true;
         }
 
-        for (SubCommand subCommand : getSubCommands())
-            if (args[0].equalsIgnoreCase(subCommand.getSubCommand())) {
-                subCommand.run(sender, args);
-                return true;
-            }
-        // No suitable subcommand
-        runNoArgs(sender, command, label, args);
+        if (subCommandMap.containsKey(args[0])) {
+            subCommandMap.get(args[0]).run(sender, args);
+        } else {
+            // No suitable subcommand
+            runNoArgs(sender, command, label, args);
+        }
         return true;
+    }
+
+    /**
+     * Checks whether or not the player has permission for this command.
+     *
+     * @param p The player.
+     * @return Returns {@code true} if the player has permission to use this command, {@code false} otherwise.
+     */
+    public boolean playerHasPermission(Player p) {
+        return p.hasPermission(permission);
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<SubCommand> getSubCommands() {
-        return subCommands;
+    public Set<String> getSubCommands() {
+        return subCommandMap.keySet();
+    }
+
+    public SubCommand getSubCommand(String name) {
+        return subCommandMap.get(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public void addSubCommand(SubCommand subCommand) {
-        subCommands.add(subCommand);
+        subCommandMap.put(subCommand.getSubCommand(), subCommand);
     }
 
     /**

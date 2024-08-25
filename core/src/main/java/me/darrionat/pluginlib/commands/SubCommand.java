@@ -5,6 +5,8 @@ import me.darrionat.pluginlib.Plugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * The {@link SubCommand} represents a command that has arguments. SubCommands require to be within a parent command,
  * {@link BaseCommand}.
@@ -26,7 +28,7 @@ public abstract class SubCommand {
     private final String permission;
 
     /**
-     * Creates a new {@link SubCommand} object and adds it the the {@link BaseCommand}'s subcommands.
+     * Creates a new {@link SubCommand} object and adds it the {@link BaseCommand}'s subcommands.
      *
      * @param parentCommand The parent command.
      * @param plugin        The plugin that the subcommand belongs to.
@@ -83,12 +85,16 @@ public abstract class SubCommand {
         }
 
         if (sender instanceof Player p) {
-            if (!p.hasPermission(permission)) {
+            if (!playerHasPermission(p)) {
                 errorHandler.noPermissionError(p, permission);
                 return;
             }
         }
         runCommand(sender, args);
+    }
+
+    public boolean playerHasPermission(Player p) {
+        return p.hasPermission(permission);
     }
 
     /**
@@ -114,4 +120,12 @@ public abstract class SubCommand {
      * @param args   The arguments of the command.
      */
     protected abstract void runCommand(CommandSender sender, String[] args);
+
+    /**
+     * Requests a list of all possibilities for potential tab completes.
+     *
+     * @param args A non-empty array of the command arguments. The first item in this array is always the subcommand label.
+     * @return Returns a list of possible strings to use for tab complete.
+     */
+    public abstract List<String> getTabComplete(String[] args);
 }
