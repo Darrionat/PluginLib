@@ -17,7 +17,8 @@ public class Utils {
     /**
      * Represents the pattern of a hex code.
      */
-    private static final Pattern PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
+    private static final Pattern PATTERN = Pattern.compile("(#[a-fA-F0-9]{6})");
+//    Pattern pattern = Pattern.compile("(#[a-fA-F0-9]{6})");
 
     /**
      * Formats chat to contain color codes using the {@code &}.
@@ -30,11 +31,19 @@ public class Utils {
     public static String toColor(String s) {
         // 1.16+
         if (XMaterial.NETHERITE_BLOCK.isSupported()) {
-            Matcher match = PATTERN.matcher(s);
-            while (match.find()) {
-                String color = s.substring(match.start(), match.end());
-                s = s.replace(color, ChatColor.valueOf(color) + "");
-                match = PATTERN.matcher(s);
+            Matcher matcher = PATTERN.matcher(s);
+            while (matcher.find()) {
+                String hexCode = s.substring(matcher.start(), matcher.end());
+                String replaceSharp = hexCode.replace('#', 'x');
+
+                char[] ch = replaceSharp.toCharArray();
+                StringBuilder builder = new StringBuilder();
+                for (char c : ch) {
+                    builder.append("&").append(c);
+                }
+
+                s = s.replace(hexCode, builder.toString());
+                matcher = PATTERN.matcher(s);
             }
         }
         return ChatColor.translateAlternateColorCodes('&', s);

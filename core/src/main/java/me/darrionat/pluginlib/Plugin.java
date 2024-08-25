@@ -70,6 +70,9 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
      */
     public abstract int getbStatsResourceId();
 
+    /**
+     * Enables bStats Metrics. Requires that {@code getbStatsResourceId} returns a valid resource id.
+     */
     public void enableMetrics() {
         this.metrics = new Metrics(this, getbStatsResourceId());
     }
