@@ -21,3 +21,5 @@ dependency-reduced-pom.xml
 
 # IntelliJ
 **/.idea
+
+.flattened-pom.xml

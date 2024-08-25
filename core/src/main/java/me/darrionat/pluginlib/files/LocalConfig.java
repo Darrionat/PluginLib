@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Set;
 
 /**
  * Represents an {@link UpdatableConfig}.
@@ -63,28 +64,56 @@ public class LocalConfig implements UpdatableConfig {
      */
     public void sync() {
         InputStream is = plugin.getResource(file.getName());
-        if (is == null)
-            return;
+        if (is == null) return;
         // The saved file
         FileConfiguration config = getFileConfiguration();
         // The file built in within the .jar
         YamlConfiguration jarConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(is));
 
         // Add all default keys to the config if nonexistent
-        for (String key : jarConfig.getKeys(true))
-            if (!config.contains(key)) {
-                config.createSection(key);
-                config.set(key, jarConfig.get(key));
-            }
-
-        // Remove all non-default keys from the config
-        for (String key : config.getConfigurationSection("").getKeys(true))
-            if (!jarConfig.contains(key))
-                config.set(key, null);
+        for (String keyToAdd : keysToBeAdded(config, jarConfig)) {
+            config.createSection(keyToAdd);
+            config.set(keyToAdd, jarConfig.get(keyToAdd));
+        }
+        for (String keyToRemove : keysToBeRemoved(config, jarConfig)) {
+            config.set(keyToRemove, null);
+        }
 
         // Adds the version for debug purposes
         config.set("version", plugin.getDescription().getVersion());
         save(config);
+    }
+
+    /**
+     * Compares the currently saved config and the config saved in the plugin .jar,
+     * and returns the keys that are present in the saved config but not present in the plugin's JAR file.
+     *
+     * @param savedConfig The config currently saved in the plugin's folder.
+     * @param jarConfig   The config stored in the plugin's Java archive file.
+     * @return Returns the keys that are present in the saved config and not present in the config present in the plugin's JAR file.
+     */
+    private Set<String> keysToBeRemoved(FileConfiguration savedConfig, FileConfiguration jarConfig) {
+        Set<String> savedConfigKeys = savedConfig.getKeys(true);
+        Set<String> jarConfigKeys = jarConfig.getKeys(true);
+        // Set difference: savedConfigKeys - jarConfigKeys
+        savedConfigKeys.removeAll(jarConfigKeys);
+        return savedConfigKeys;
+    }
+
+    /**
+     * Compares the currently saved config and the config saved in the plugin .jar,
+     * and returns the keys that are not present in the saved config but are present in the plugin's JAR file.
+     *
+     * @param savedConfig The config currently saved in the plugin's folder.
+     * @param jarConfig   The config stored in the plugin's Java archive file.
+     * @return Returns the keys that are not present in the saved config but are present in the plugin's JAR file.
+     */
+    private Set<String> keysToBeAdded(FileConfiguration savedConfig, FileConfiguration jarConfig) {
+        Set<String> savedConfigKeys = savedConfig.getKeys(true);
+        Set<String> jarConfigKeys = jarConfig.getKeys(true);
+        // Set difference: jarConfigKeys - savedConfigKeys
+        jarConfigKeys.removeAll(savedConfigKeys);
+        return jarConfigKeys;
     }
 
     /**

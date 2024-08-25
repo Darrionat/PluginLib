@@ -77,7 +77,6 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
         return new SpigotMCUpdateHandler(this, getSpigotResourceId());
     }
 
-
     /**
      * Determines if the server version is {@code pre-1.13}.
      *

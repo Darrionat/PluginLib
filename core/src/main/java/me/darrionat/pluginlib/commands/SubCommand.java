@@ -1,6 +1,5 @@
 package me.darrionat.pluginlib.commands;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.darrionat.pluginlib.ErrorHandler;
 import me.darrionat.pluginlib.Plugin;
 import org.bukkit.command.CommandSender;
@@ -83,8 +82,7 @@ public abstract class SubCommand {
             return;
         }
 
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             if (!p.hasPermission(permission)) {
                 errorHandler.noPermissionError(p, permission);
                 return;
@@ -97,7 +95,7 @@ public abstract class SubCommand {
      * Gets the amount of arguments this {@link SubCommand} needs to be ran.
      *
      * @return Returns an amount of arguments that is required for the command to be ran. This amount includes the
-     *         {@link SubCommand} itself as an argument.
+     * {@link SubCommand} itself as an argument.
      * @see #getSubCommand()
      */
     public abstract int getRequiredArgs();
