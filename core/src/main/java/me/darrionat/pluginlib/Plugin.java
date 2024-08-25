@@ -43,7 +43,6 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
         else
             enchantmentHandler = new EnchantmentService();
         initPlugin();
-        enableMetrics();
     }
 
     /**
@@ -64,8 +63,15 @@ public abstract class Plugin extends JavaPlugin implements IPlugin {
      */
     public abstract int getSpigotResourceId();
 
+    /**
+     * Gets the resource id on bStats.
+     *
+     * @return The project id of the resource on bStats
+     */
+    public abstract int getbStatsResourceId();
+
     public void enableMetrics() {
-        this.metrics = new Metrics(this, getSpigotResourceId());
+        this.metrics = new Metrics(this, getbStatsResourceId());
     }
 
     /**
