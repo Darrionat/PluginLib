@@ -18,7 +18,6 @@ public class Utils {
      * Represents the pattern of a hex code.
      */
     private static final Pattern PATTERN = Pattern.compile("(#[a-fA-F0-9]{6})");
-//    Pattern pattern = Pattern.compile("(#[a-fA-F0-9]{6})");
 
     /**
      * Formats chat to contain color codes using the {@code &}.

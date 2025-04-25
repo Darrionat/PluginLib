@@ -6,6 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -112,5 +113,20 @@ public class EnchantmentWrapper extends Enchantment {
     @Override
     public @NotNull String getTranslationKey() {
         return name;
+    }
+
+    @Override
+    public @NotNull NamespacedKey getKeyOrThrow() {
+        return getKey();
+    }
+
+    @Override
+    public @Nullable NamespacedKey getKeyOrNull() {
+        return getKey();
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return true;
     }
 }

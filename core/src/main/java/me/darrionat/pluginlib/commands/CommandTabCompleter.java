@@ -46,6 +46,12 @@ public class CommandTabCompleter implements TabCompleter {
         if (args.length >= 2) {
             String subCommandString = args[0];
             SubCommand subCommand = command.getSubCommand(subCommandString);
+
+            if (subCommand == null) {
+                // The command the sender typed does not exist
+                return null;
+            }
+
             // Ignores players without permission
             if (sender instanceof Player p) {
                 if (!subCommand.playerHasPermission(p)) {
@@ -62,10 +68,8 @@ public class CommandTabCompleter implements TabCompleter {
         // This makes the list automatically shorter and adapt to autofill.
         List<String> finalList = new ArrayList<>();
         for (String s : list) {
-            if (!s.toUpperCase().contains(args[args.length - 1].toUpperCase())) {
-                continue;
-            }
-            finalList.add(s.toLowerCase());
+            if (s.toLowerCase().contains(args[args.length - 1].toLowerCase()))
+                finalList.add(s.toLowerCase());
         }
         return finalList;
     }
